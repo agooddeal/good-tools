@@ -27,7 +27,19 @@
 
 # Supabase
 {$SUPABASE_HOSTNAME} {
-    reverse_proxy localhost:8000
+    reverse_proxy localhost:8000 {
+        header_up Host {http.request.host}
+        header_up X-Real-IP {http.request.remote.host}
+        header_up X-Forwarded-For {http.request.remote.host}
+        header_up X-Forwarded-Proto {http.request.scheme}
+    }
+    
+    # Add timeouts for SSL certificate generation
+    tls {
+        resolvers 1.1.1.1 8.8.8.8
+        protocols tls1.2 tls1.3
+        must_staple
+    }
 }
 
 # SearXNG
