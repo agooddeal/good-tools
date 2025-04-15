@@ -1,18 +1,11 @@
 {
-    # Global options - works for both environments
     email admin@gooddeals.work
     admin off
-    auto_https off
-    servers {
-        protocol {
-            allow_h2c true
-            experimental_http3 true
-        }
-    }
+#    auto_https off
 }
 
 # N8N
-n8n.gooddeals.work {
+dev.n8n.gooddeals.work {
     # For domains, Caddy will automatically use Let's Encrypt
     # For localhost/port addresses, HTTPS won't be enabled
     reverse_proxy n8n:5678 {
@@ -28,8 +21,8 @@ n8n.gooddeals.work {
 }
 
 # Open WebUI
-webui.gooddeals.work {
-    reverse_proxy open-webui:3000 {
+dev.webui.gooddeals.work {
+    reverse_proxy open-webui:8080 {
         header_up Host {host}
         header_up X-Real-IP {remote}
         header_up X-Forwarded-For {remote}
@@ -42,7 +35,7 @@ webui.gooddeals.work {
 }
 
 # Flowise
-flowise.gooddeals.work {
+dev.flowise.gooddeals.work {
     reverse_proxy flowise:3001 {
         header_up Host {host}
         header_up X-Real-IP {remote}
@@ -56,7 +49,7 @@ flowise.gooddeals.work {
 }
 
 # Ollama API
-ollama.gooddeals.work {
+dev.ollama.gooddeals.work {
     reverse_proxy ollama:11434 {
         header_up Host {host}
         header_up X-Real-IP {remote}
@@ -70,8 +63,8 @@ ollama.gooddeals.work {
 }
 
 # Supabase
-supabase.gooddeals.work {
-    reverse_proxy kong:8000 {
+dev.supabase.gooddeals.work {
+    reverse_proxy kong:4000 {
         header_up Host {host}
         header_up X-Real-IP {remote}
         header_up X-Forwarded-For {remote}
@@ -84,7 +77,7 @@ supabase.gooddeals.work {
 }
 
 # SearXNG
-search.gooddeals.work {
+dev.search.gooddeals.work {
     encode zstd gzip
     
     @api {
@@ -135,6 +128,33 @@ search.gooddeals.work {
     
     # SearXNG (uWSGI)
     reverse_proxy searxng:8080 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    }
+    tls {
+        resolvers 1.1.1.1 8.8.8.8
+        protocols tls1.2 tls1.3
+    }
+}
+
+
+grist.gooddeals.work {
+    reverse_proxy grist:8484 {
+        header_up Host {host}
+        header_up X-Real-IP {remote}
+        header_up X-Forwarded-For {remote}
+        header_up X-Forwarded-Proto {scheme}
+    }
+    tls {
+        resolvers 1.1.1.1 8.8.8.8
+        protocols tls1.2 tls1.3
+    }
+}
+
+archon.gooddeals.work {
+    reverse_proxy archon-container:8501 {
         header_up Host {host}
         header_up X-Real-IP {remote}
         header_up X-Forwarded-For {remote}
